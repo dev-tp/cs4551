@@ -2,10 +2,12 @@ package homework1;
 
 import java.util.Scanner;
 
+import utils.Image;
+
 public class Main {
 
     private static void printOptions() {
-        System.out.println("1. Conversion to gray-scale image (24 to 8 bits)");
+        System.out.println("\n1. Conversion to gray-scale image (24 to 8 bits)");
         System.out.println("2. Conversion to n-level image");
         System.out.println("3. Conversion to 8 bit Indexed Color Image using Uniform Color Quantization" +
                 "(24 to 8 bits)");
@@ -20,26 +22,39 @@ public class Main {
             return;
         }
 
+        Image image;
+
+        try {
+            image = new Image(args[0]);
+        } catch (Exception exception) {
+            System.err.println(exception.getMessage());
+            return;
+        }
+
         boolean quit = false;
         Scanner scanner = new Scanner(System.in);
+        String fileName = args[0].split("\\.")[0];
 
-        System.out.println("\nMain Menu:\n");
+        System.out.println("\nMain Menu:");
 
         while (!quit) {
             try {
                 printOptions();
                 switch (scanner.nextInt()) {
                     case 1:
-                        System.out.println("\nYou chose option 1.\n");
+                        System.out.println("\nCreating gray-scale image...");
+                        image.grayScale();
+                        image.display();
+                        image.writeToPPM(fileName + "-gray.ppm");
                         break;
                     case 2:
-                        System.out.println("\nYou chose option 2.\n");
+                        System.out.println("\nYou chose option 2.");
                         break;
                     case 3:
-                        System.out.println("\nYou chose option 3.\n");
+                        System.out.println("\nYou chose option 3.");
                         break;
                     case 4:
-                        System.out.println("\nYou chose option 4.\n");
+                        System.out.println("\nYou chose option 4.");
                         break;
                     default:
                         quit = true;
