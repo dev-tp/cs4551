@@ -10,7 +10,7 @@ public class Main {
         System.out.println("\n1. Conversion to gray-scale image (24 to 8 bits)");
         System.out.println("2. Conversion to n-level image");
         System.out.println("3. Conversion to 8 bit Indexed Color Image using Uniform Color Quantization" +
-                "(24 to 8 bits)");
+                " (24 to 8 bits)");
         System.out.println("4. Conversion to 8 bit Indexed Color Image using ________");
         System.out.println("5. Quit\n");
         System.out.print("Please enter a task number [1-5]: ");
@@ -51,7 +51,10 @@ public class Main {
                         System.out.println("\nYou chose option 2.");
                         break;
                     case 3:
-                        System.out.println("\nYou chose option 3.");
+                        System.out.println("\nCreating image using Uniform Color Quantization...");
+                        Image quantizedImage = UniformColorQuantization.quantizeImage(image);
+                        quantizedImage.display();
+                        quantizedImage.writeToPPM(fileName + "-index.ppm");
                         break;
                     case 4:
                         System.out.println("\nYou chose option 4.");
