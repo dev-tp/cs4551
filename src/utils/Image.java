@@ -33,7 +33,7 @@ public class Image {
     /**
      * Create a buffer and read data from the image file
      */
-    public Image(String fileName) {
+    public Image(String fileName) throws Exception {
         this.fileName = fileName;
         readPPM(fileName);
         System.out.println("Created an image from " + fileName + " with size " + getWidth() + "x" + getHeight());
@@ -153,56 +153,48 @@ public class Image {
      * Read the data from the specified file
      * @param fileName Can be a path or file name
      */
-    public void readPPM(String fileName) {
-        File file;
-        FileImageInputStream imageInputStream;
+    public void readPPM(String fileName) throws Exception {
+        FileImageInputStream imageInputStream = new FileImageInputStream(new File(fileName));
 
-        try {
-            file = new File(fileName);
-            imageInputStream = new FileImageInputStream(file);
+        System.out.println("Reading " + fileName + "...");
 
-            System.out.println("Reading " + fileName + "...");
-
-            // read identifier
-            if (!imageInputStream.readLine().equals("P6")) {
-                System.err.println("This is NOT P6 PPM. Wrong Format.");
-                System.exit(0);
-            }
-
-            imageInputStream.readLine(); // read comment line
-
-            // read width & height
-            String[] imageDimensions = imageInputStream.readLine().split(" ");
-            int width = Integer.parseInt(imageDimensions[0]);
-            int height = Integer.parseInt(imageDimensions[1]);
-
-            // read maximum value
-            int maximumValue = Integer.parseInt(imageInputStream.readLine());
-
-            if (maximumValue != 255) {
-                System.err.println("Max val is not 255");
-                System.exit(0);
-            }
-
-            // read binary data byte by byte and save it into BufferedImage object
-            byte[] rgb = new byte[3];
-            bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-            for (int y = 0; y < getHeight(); y++) {
-                for (int x = 0; x < getWidth(); x++) {
-                    rgb[0] = imageInputStream.readByte();
-                    rgb[1] = imageInputStream.readByte();
-                    rgb[2] = imageInputStream.readByte();
-                    setPixel(x, y, rgb);
-                }
-            }
-
-            imageInputStream.close();
-
-            System.out.println("Read " + fileName + " Successfully.");
-        } catch (Exception exception) {
-            System.err.println(exception.getMessage());
+        // read identifier
+        if (!imageInputStream.readLine().equals("P6")) {
+            System.err.println("This is NOT P6 PPM. Wrong Format.");
+            System.exit(0);
         }
+
+        imageInputStream.readLine(); // read comment line
+
+        // read width & height
+        String[] imageDimensions = imageInputStream.readLine().split(" ");
+        int width = Integer.parseInt(imageDimensions[0]);
+        int height = Integer.parseInt(imageDimensions[1]);
+
+        // read maximum value
+        int maximumValue = Integer.parseInt(imageInputStream.readLine());
+
+        if (maximumValue != 255) {
+            System.err.println("Max val is not 255");
+            System.exit(0);
+        }
+
+        // read binary data byte by byte and save it into BufferedImage object
+        byte[] rgb = new byte[3];
+        bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        for (int y = 0; y < getHeight(); y++) {
+            for (int x = 0; x < getWidth(); x++) {
+                rgb[0] = imageInputStream.readByte();
+                rgb[1] = imageInputStream.readByte();
+                rgb[2] = imageInputStream.readByte();
+                setPixel(x, y, rgb);
+            }
+        }
+
+        imageInputStream.close();
+
+        System.out.println("Read " + fileName + " Successfully.");
     }
 
     /**
