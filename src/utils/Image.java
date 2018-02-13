@@ -133,7 +133,8 @@ public class Image {
         bufferedImage.setRGB(x, y, pixel);
     }
 
-    public void grayScale() {
+    public Image grayScale() {
+        Image grayScaleImage = new Image(getWidth(), getHeight());
         int[] rgb = new int[3];
 
         for (int y = 0; y < getHeight(); y++) {
@@ -147,9 +148,11 @@ public class Image {
                 }
 
                 rgb[0] = rgb[1] = rgb[2] = gray;
-                setPixel(x, y, rgb);
+                grayScaleImage.setPixel(x, y, rgb);
             }
         }
+
+        return grayScaleImage;
     }
 
     /**

@@ -43,9 +43,9 @@ public class Main {
                 switch (scanner.nextInt()) {
                     case 1:
                         System.out.println("\nCreating gray-scale image...");
-                        image.grayScale();
-                        image.display();
-                        image.writeToPPM(fileName + "-gray.ppm");
+                        Image grayScaleImage = image.grayScale();
+                        grayScaleImage.display();
+                        grayScaleImage.writeToPPM(fileName + "-gray.ppm");
                         break;
                     case 2:
                         System.out.println("\nYou chose option 2.");
