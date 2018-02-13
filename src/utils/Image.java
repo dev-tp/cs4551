@@ -143,8 +143,10 @@ public class Image {
 
                 int gray = (int) (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]);
 
-                if (gray < 0 || gray > 255) {
-                    gray = 1;
+                if (gray < 0) {
+                    gray = 0;
+                } else if (gray > 255) {
+                    gray = 255;
                 }
 
                 rgb[0] = rgb[1] = rgb[2] = gray;
