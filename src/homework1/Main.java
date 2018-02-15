@@ -43,12 +43,15 @@ public class Main {
                 switch (scanner.nextInt()) {
                     case 1:
                         System.out.println("\nCreating gray-scale image...");
-                        Image grayScaleImage = image.grayScale();
+                        Image grayScaleImage = NLevelImage.grayScale(image);
                         grayScaleImage.display();
                         grayScaleImage.writeToPPM(fileName + "-gray.ppm");
                         break;
                     case 2:
                         System.out.println("\nYou chose option 2.");
+                        Image nLevelImage = new NLevelImage(image).applyLevel(); // Binary level is default right now
+                        nLevelImage.display();
+                        nLevelImage.writeToPPM(fileName + "-n-level.ppm");
                         break;
                     case 3:
                         System.out.println("\nCreating image using Uniform Color Quantization...");

@@ -133,30 +133,6 @@ public class Image {
         bufferedImage.setRGB(x, y, pixel);
     }
 
-    public Image grayScale() {
-        Image grayScaleImage = new Image(getWidth(), getHeight());
-        int[] rgb = new int[3];
-
-        for (int y = 0; y < getHeight(); y++) {
-            for (int x = 0; x < getWidth(); x++) {
-                getPixel(x, y, rgb);
-
-                int gray = (int) (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]);
-
-                if (gray < 0) {
-                    gray = 0;
-                } else if (gray > 255) {
-                    gray = 255;
-                }
-
-                rgb[0] = rgb[1] = rgb[2] = gray;
-                grayScaleImage.setPixel(x, y, rgb);
-            }
-        }
-
-        return grayScaleImage;
-    }
-
     /**
      * Set a pixel's RGB value at specific coordinate using integer values
      * @param x [0, Image Width]
