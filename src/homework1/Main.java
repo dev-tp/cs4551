@@ -49,9 +49,10 @@ public class Main {
                         break;
                     case 2:
                         System.out.print("Enter level [2, 4, 8, 16]: ");
-                        Image nLevelImage = new NLevelImage(image).applyLevel(scanner.nextInt());
-                        nLevelImage.display();
-                        nLevelImage.writeToPPM(fileName + "-n-level.ppm");
+                        NLevelImage nLevelImage = new NLevelImage(image);
+                        nLevelImage.applyLevel(scanner.nextInt());
+                        nLevelImage.getImage().display();
+                        nLevelImage.getImage().writeToPPM(fileName + "-n-level.ppm");
                         break;
                     case 3:
                         System.out.println("\nCreating image using Uniform Color Quantization...");

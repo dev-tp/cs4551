@@ -19,7 +19,7 @@ class NLevelImage {
         averageGrayValue = (Double) tuple[1];
     }
 
-    Image applyLevel(int level) {
+    void applyLevel(int level) {
         int[] rgb = new int[3];
 
         for (int y = 0; y < image.getHeight(); y++) {
@@ -43,8 +43,6 @@ class NLevelImage {
                 image.setPixel(x, y, rgb);
             }
         }
-
-        return image;
     }
 
     static Image grayScale(Image image) {
@@ -77,6 +75,10 @@ class NLevelImage {
         averageGrayValue = averageGrayValue / (image.getWidth() * image.getHeight());
 
         return new Object[]{grayScaleImage, averageGrayValue};
+    }
+
+    Image getImage() {
+        return image;
     }
 
     private static void thresholdValue(int[] thresholdValues, int[] rgb) {
