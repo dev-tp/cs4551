@@ -4,6 +4,12 @@ import utils.Image;
 
 class NLevelImage {
 
+    private static final int[] LEVEL_4_THRESHOLD_VALUES = {0, 85, 170, 255};
+    private static final int[] LEVEL_8_THRESHOLD_VALUES = {0, 32, 64, 96, 128, 160, 192, 224};
+    private static final int[] LEVEL_16_THRESHOLD_VALUES = {
+            0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240
+    };
+
     private double averageGrayValue;
     private Image image;
 
@@ -13,13 +19,27 @@ class NLevelImage {
         averageGrayValue = (Double) tuple[1];
     }
 
-    Image applyLevel() {
+    Image applyLevel(int level) {
         int[] rgb = new int[3];
 
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 image.getPixel(x, y, rgb);
-                rgb[0] = rgb[1] = rgb[2] = rgb[0] < averageGrayValue ? 0 : 255;
+
+                switch (level) {
+                    case 2:
+                        rgb[0] = rgb[1] = rgb[2] = rgb[0] < averageGrayValue ? 0 : 255;
+                        break;
+                    case 4:
+                        thresholdValue(LEVEL_4_THRESHOLD_VALUES, rgb);
+                        break;
+                    case 8:
+                        thresholdValue(LEVEL_8_THRESHOLD_VALUES, rgb);
+                        break;
+                    default:
+                        thresholdValue(LEVEL_16_THRESHOLD_VALUES, rgb);
+                }
+
                 image.setPixel(x, y, rgb);
             }
         }
@@ -57,5 +77,16 @@ class NLevelImage {
         averageGrayValue = averageGrayValue / (image.getWidth() * image.getHeight());
 
         return new Object[]{grayScaleImage, averageGrayValue};
+    }
+
+    private static void thresholdValue(int[] thresholdValues, int[] rgb) {
+        for (int i = 0; i < thresholdValues.length - 1; i++) {
+            if (thresholdValues[i] <= rgb[0] && rgb[0] < thresholdValues[i + 1]) {
+                rgb[0] = rgb[1] = rgb[2] = thresholdValues[i];
+                return;
+            }
+        }
+
+        rgb[0] = rgb[1] = rgb[2] = thresholdValues[thresholdValues.length - 1];
     }
 }

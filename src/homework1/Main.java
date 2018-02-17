@@ -48,8 +48,8 @@ public class Main {
                         grayScaleImage.writeToPPM(fileName + "-gray.ppm");
                         break;
                     case 2:
-                        System.out.println("\nYou chose option 2.");
-                        Image nLevelImage = new NLevelImage(image).applyLevel(); // Binary level is default right now
+                        System.out.print("Enter level [2, 4, 8, 16]: ");
+                        Image nLevelImage = new NLevelImage(image).applyLevel(scanner.nextInt());
                         nLevelImage.display();
                         nLevelImage.writeToPPM(fileName + "-n-level.ppm");
                         break;
