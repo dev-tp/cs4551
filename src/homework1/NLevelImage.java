@@ -19,6 +19,46 @@ class NLevelImage {
         averageGrayValue = (Double) tuple[1];
     }
 
+    // FIXME
+    Image errorDiffuse() {
+        int[] rgb = new int[3];
+
+        int height = image.getHeight();
+        int width = image.getWidth();
+
+        Image errorDiffusedImage = new Image(width, height);
+
+        for (int y = 0; y < height - 1; y++) {
+            for (int x = 1; x < width - 1; x++) {
+                image.getPixel(x, y, rgb);
+
+                int gray = rgb[0];
+
+                rgb[0] = rgb[1] = rgb[2] = rgb[0] < 127 ? 0 : 255;
+
+                int error = gray - rgb[0];
+
+                image.getPixel(x + 1, y, rgb);
+                rgb[0] = rgb[1] = rgb[2] = rgb[0] + (int) (7.0 / 16.0 * error);
+                errorDiffusedImage.setPixel(x + 1, y, rgb);
+
+                image.getPixel(x - 1, y + 1, rgb);
+                rgb[0] = rgb[1] = rgb[2] = rgb[0] + (int) (3.0 / 16.0 * error);
+                errorDiffusedImage.setPixel(x - 1, y + 1, rgb);
+
+                image.getPixel(x, y + 1, rgb);
+                rgb[0] = rgb[1] = rgb[2] = rgb[0] + (int) (5.0 / 16.0 * error);
+                errorDiffusedImage.setPixel(x, y + 1, rgb);
+
+                image.getPixel(x + 1, y + 1, rgb);
+                rgb[0] = rgb[1] = rgb[2] = rgb[0] + (int) (1.0 / 16.0 * error);
+                errorDiffusedImage.setPixel(x + 1, y + 1, rgb);
+            }
+        }
+
+        return errorDiffusedImage;
+    }
+
     static Image grayScale(Image image) {
         return (Image) grayScale(image, new Image(image.getWidth(), image.getHeight()))[0];
     }
