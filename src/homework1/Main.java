@@ -48,11 +48,11 @@ public class Main {
                         grayScaleImage.writeToPPM(fileName + "-gray.ppm");
                         break;
                     case 2:
-                        System.out.print("Enter level [2, 4, 8, 16]: ");
                         NLevelImage nLevelImage = new NLevelImage(image);
-                        nLevelImage.applyLevel(scanner.nextInt());
-                        nLevelImage.getImage().display();
-                        nLevelImage.getImage().writeToPPM(fileName + "-n-level.ppm");
+                        System.out.print("Enter level [2, 4, 8, 16]: ");
+                        Image thresholdImage = nLevelImage.thresholdImage(scanner.nextInt());
+                        thresholdImage.display();
+                        thresholdImage.writeToPPM(fileName + "-threshold.ppm");
                         break;
                     case 3:
                         System.out.println("\nCreating image using Uniform Color Quantization...");
