@@ -30,6 +30,11 @@ public class Image {
         System.out.println("Created an empty image with size " + width + "x" + height);
     }
 
+    public Image(Image image) {
+        bufferedImage = image.bufferedImage;
+        fileName = image.fileName;
+    }
+
     /**
      * Create a buffer and read data from the image file
      */
