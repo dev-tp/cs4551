@@ -78,5 +78,7 @@ public class Main {
         }
 
         scanner.close();
+
+        System.exit(0);
     }
 }
