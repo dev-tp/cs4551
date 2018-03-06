@@ -52,11 +52,13 @@ public class Main {
 
                         System.out.print("Enter level [2, 4, 8, 16]: ");
 
-                        Image thresholdImage = nLevelImage.thresholdImage(scanner.nextInt());
+                        int level = scanner.nextInt();
+
+                        Image thresholdImage = nLevelImage.thresholdImage(level);
                         thresholdImage.display();
                         thresholdImage.writeToPPM(fileName + "-threshold.ppm");
 
-                        Image errorDiffusedImage = nLevelImage.errorDiffuse();
+                        Image errorDiffusedImage = nLevelImage.errorDiffuse(level);
                         errorDiffusedImage.display();
                         errorDiffusedImage.writeToPPM(fileName + "-error-diffused.ppm");
                         break;

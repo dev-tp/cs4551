@@ -19,8 +19,8 @@ class NLevelImage {
         averageGrayValue = (Double) tuple[1];
     }
 
-    // FIXME Pure dots should appear
-    Image errorDiffuse() {
+    // FIXME Threshold values may not be correct
+    Image errorDiffuse(int level) {
         int[] rgb = new int[3];
 
         Image errorDiffusedImage = new Image(image);
@@ -31,7 +31,7 @@ class NLevelImage {
 
                 int gray = rgb[0];
 
-                rgb[0] = rgb[1] = rgb[2] = rgb[0] < 127 ? 0 : 255;
+                setGrayValue(rgb, level);
 
                 errorDiffusedImage.setPixel(x, y, rgb);
 
@@ -90,6 +90,22 @@ class NLevelImage {
         return new Object[]{grayScaleImage, averageGrayValue};
     }
 
+    private void setGrayValue(int[] rgb, int level) {
+        switch (level) {
+            case 2:
+                rgb[0] = rgb[1] = rgb[2] = rgb[0] < averageGrayValue ? 0 : 255;
+                break;
+            case 4:
+                thresholdValue(LEVEL_4_THRESHOLD_VALUES, rgb);
+                break;
+            case 8:
+                thresholdValue(LEVEL_8_THRESHOLD_VALUES, rgb);
+                break;
+            default:
+                thresholdValue(LEVEL_16_THRESHOLD_VALUES, rgb);
+        }
+    }
+
     Image thresholdImage(int level) {
         int[] rgb = new int[3];
 
@@ -102,19 +118,7 @@ class NLevelImage {
             for (int x = 0; x < width; x++) {
                 image.getPixel(x, y, rgb);
 
-                switch (level) {
-                    case 2:
-                        rgb[0] = rgb[1] = rgb[2] = rgb[0] < averageGrayValue ? 0 : 255;
-                        break;
-                    case 4:
-                        thresholdValue(LEVEL_4_THRESHOLD_VALUES, rgb);
-                        break;
-                    case 8:
-                        thresholdValue(LEVEL_8_THRESHOLD_VALUES, rgb);
-                        break;
-                    default:
-                        thresholdValue(LEVEL_16_THRESHOLD_VALUES, rgb);
-                }
+                setGrayValue(rgb, level);
 
                 thresholdImage.setPixel(x, y, rgb);
             }
