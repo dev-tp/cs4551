@@ -2,6 +2,8 @@ package homework2;
 
 import java.util.Scanner;
 
+import utils.Image;
+
 public class Main {
 
     private static void printOptions() {
@@ -21,6 +23,8 @@ public class Main {
                 printOptions();
                 switch (scanner.nextInt()) {
                     case 1:
+                        Aliasing aliasing = new Aliasing(new Image(512, 512, new int[]{255, 255, 255}));
+                        aliasing.drawCircle(1, 10);
                         break;
                     case 2:
                         break;

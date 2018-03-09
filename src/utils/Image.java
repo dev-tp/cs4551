@@ -30,6 +30,16 @@ public class Image {
         System.out.println("Created an empty image with size " + width + "x" + height);
     }
 
+    public Image(int width, int height, int[] background) {
+        this(width, height);
+
+        for (int y = 0; y < getHeight(); y++) {
+            for (int x = 0; x < getWidth(); x++) {
+                setPixel(x, y, background);
+            }
+        }
+    }
+
     public Image(Image image) {
         bufferedImage = image.bufferedImage;
         fileName = image.fileName;
