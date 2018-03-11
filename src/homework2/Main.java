@@ -23,8 +23,16 @@ public class Main {
                 printOptions();
                 switch (scanner.nextInt()) {
                     case 1:
+                        System.out.println("\nDraw a target");
+
+                        System.out.print("Enter the circles' thickness: ");
+                        int m = scanner.nextInt();
+
+                        System.out.print("Enter the padding between circles: ");
+                        int n = scanner.nextInt();
+
                         Aliasing aliasing = new Aliasing(new Image(512, 512, new int[]{255, 255, 255}));
-                        aliasing.drawCircle(1, 10);
+                        aliasing.drawCircle(m, n);
                         break;
                     case 2:
                         break;

@@ -10,18 +10,6 @@ class Aliasing {
         this.image = image;
     }
 
-    private void horizontalLine(int x0, int x1, int y, int[] rgb) {
-        while (x0 <= x1) {
-            image.setPixel(x0++, y, rgb);
-        }
-    }
-
-    private void verticalLine(int x, int y0, int y1, int[] rgb) {
-        while (y0 <= y1) {
-            image.setPixel(x, y0++, rgb);
-        }
-    }
-
     // Bresenham's Circle Algorithm
     // https://stackoverflow.com/questions/27755514/circle-with-thickness-drawing-algorithm
     private void bresenhamCircle(int ir, int or) {
@@ -77,5 +65,17 @@ class Aliasing {
         }
 
         image.display();
+    }
+
+    private void horizontalLine(int x0, int x1, int y, int[] rgb) {
+        while (x0 <= x1) {
+            image.setPixel(x0++, y, rgb);
+        }
+    }
+
+    private void verticalLine(int x, int y0, int y1, int[] rgb) {
+        while (y0 <= y1) {
+            image.setPixel(x, y0++, rgb);
+        }
     }
 }
