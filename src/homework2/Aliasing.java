@@ -63,14 +63,28 @@ class Aliasing {
         for (int i = buffer; i <= 256; i += (thickness + buffer)) {
             bresenhamCircle(i, i + thickness);
         }
-
-        image.display();
     }
 
     private void horizontalLine(int x0, int x1, int y, int[] rgb) {
         while (x0 <= x1) {
             image.setPixel(x0++, y, rgb);
         }
+    }
+
+    void subSample(int k) {
+        int[] rgb = {255, 255, 255};
+
+        Image subImage = new Image(image.getWidth() / k, image.getHeight() / k, rgb);
+
+        for (int y = 0; y < image.getHeight(); y += k) {
+            for (int x = 0; x < image.getWidth(); x += k) {
+                image.getPixel(x, y, rgb);
+                subImage.setPixel(x / k, y / k, rgb);
+            }
+        }
+
+        image.display();
+        subImage.display();
     }
 
     private void verticalLine(int x, int y0, int y1, int[] rgb) {

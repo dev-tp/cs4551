@@ -33,6 +33,11 @@ public class Main {
 
                         Aliasing aliasing = new Aliasing(new Image(512, 512, new int[]{255, 255, 255}));
                         aliasing.drawCircle(m, n);
+
+                        System.out.println("\nSub-sample");
+                        System.out.print("Enter a value [2, 4, 8, 16]: ");
+                        aliasing.subSample(scanner.nextInt());
+
                         break;
                     case 2:
                         break;
