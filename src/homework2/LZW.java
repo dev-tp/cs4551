@@ -12,11 +12,24 @@ import java.util.HashMap;
 class LZW {
 
     private ArrayList<Integer> result;
+    private HashMap<Integer, String> inverseLookupTable;
     private String data;
 
     LZW(String pathToFile) throws IOException {
+        inverseLookupTable = new HashMap<>();
         result = new ArrayList<>();
+
         readFile(pathToFile);
+    }
+
+    void decode() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Integer entry : result) {
+            stringBuilder.append(inverseLookupTable.get(entry));
+        }
+
+        System.out.printf("Decoded message: %s\n", stringBuilder.toString());
     }
 
     void encode() {
@@ -28,7 +41,8 @@ class LZW {
             String character = "" + data.charAt(i);
 
             if (!lookupTable.containsKey(character)) {
-                lookupTable.put(character, index++);
+                lookupTable.put(character, index);
+                inverseLookupTable.put(index++, character);
             }
         }
 
@@ -42,7 +56,8 @@ class LZW {
                 p = pc;
             } else {
                 result.add(lookupTable.get(p));
-                lookupTable.put(pc, index++);
+                lookupTable.put(pc, index);
+                inverseLookupTable.put(index++, pc);
                 p = c;
             }
         }
