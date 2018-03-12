@@ -40,6 +40,10 @@ public class Main {
 
                         break;
                     case 2:
+                        System.out.print("Type the path of file to encode: ");
+                        scanner.nextLine(); // Clear last line
+                        LZW lwz = new LZW(scanner.nextLine());
+                        lwz.encode();
                         break;
                     default:
                         quit = true;
