@@ -43,9 +43,10 @@ public class Main {
                         System.out.print("Type the path of file to encode: ");
                         scanner.nextLine(); // Clear last line
 
-                        LZW lwz = new LZW(scanner.nextLine());
-                        lwz.encode();
-                        lwz.decode();
+                        LZW lzw = new LZW(scanner.nextLine());
+                        lzw.encode();
+                        lzw.decode();
+                        lzw.compressionRatio();
 
                         break;
                     default:

@@ -22,6 +22,10 @@ class LZW {
         readFile(pathToFile);
     }
 
+    void compressionRatio() {
+        System.out.printf("Compression ratio: %.3f\n", (double) data.length() / result.size());
+    }
+
     void decode() {
         StringBuilder stringBuilder = new StringBuilder();
 
