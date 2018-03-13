@@ -5,6 +5,7 @@ import utils.Image;
 class Aliasing {
 
     private Image image;
+    private Image subSample;
 
     Aliasing(Image image) {
         this.image = image;
@@ -59,10 +60,23 @@ class Aliasing {
         }
     }
 
+    void display() {
+        image.display();
+        subSample.display();
+    }
+
     void drawCircle(int thickness, int buffer) {
         for (int i = buffer; i <= 256; i += (thickness + buffer)) {
             bresenhamCircle(i, i + thickness);
         }
+    }
+
+    void filter1() {
+
+    }
+
+    void filter2() {
+
     }
 
     private void horizontalLine(int x0, int x1, int y, int[] rgb) {
@@ -74,17 +88,14 @@ class Aliasing {
     void subSample(int k) {
         int[] rgb = {255, 255, 255};
 
-        Image subImage = new Image(image.getWidth() / k, image.getHeight() / k, rgb);
+        subSample = new Image(image.getWidth() / k, image.getHeight() / k, rgb);
 
         for (int y = 0; y < image.getHeight(); y += k) {
             for (int x = 0; x < image.getWidth(); x += k) {
                 image.getPixel(x, y, rgb);
-                subImage.setPixel(x / k, y / k, rgb);
+                subSample.setPixel(x / k, y / k, rgb);
             }
         }
-
-        image.display();
-        subImage.display();
     }
 
     private void verticalLine(int x, int y0, int y1, int[] rgb) {

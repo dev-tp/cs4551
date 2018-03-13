@@ -38,6 +38,20 @@ public class Main {
                         System.out.print("Enter a value [2, 4, 8, 16]: ");
                         aliasing.subSample(scanner.nextInt());
 
+                        System.out.println("\nApply filter:\n0. No filter\n1. Filter 1\n2. Filter 2");
+                        System.out.print("\nEnter a option: ");
+
+                        switch (scanner.nextInt()) {
+                            case 1:
+                                aliasing.filter1();
+                                break;
+                            case 2:
+                                aliasing.filter2();
+                                break;
+                        }
+
+                        aliasing.display();
+
                         break;
                     case 2:
                         System.out.print("Type the path of file to encode: ");
