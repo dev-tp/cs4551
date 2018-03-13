@@ -10,14 +10,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class LZW {
+class LempelZivWelch {
 
     private ArrayList<Integer> result;
     private HashMap<Integer, String> inverseLookupTable;
     private String data;
     private String pathToFile;
 
-    LZW(String pathToFile) throws IOException {
+    LempelZivWelch(String pathToFile) throws IOException {
         this.pathToFile = pathToFile;
 
         inverseLookupTable = new HashMap<>();

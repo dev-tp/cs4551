@@ -57,7 +57,7 @@ public class Main {
                         System.out.print("Type the path of file to encode: ");
                         scanner.nextLine(); // Clear last line
 
-                        LZW lzw = new LZW(scanner.nextLine());
+                        LempelZivWelch lzw = new LempelZivWelch(scanner.nextLine());
                         lzw.encode();
                         lzw.decode();
 
