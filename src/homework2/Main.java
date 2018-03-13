@@ -46,7 +46,10 @@ public class Main {
                         LZW lzw = new LZW(scanner.nextLine());
                         lzw.encode();
                         lzw.decode();
-                        lzw.compressionRatio();
+
+                        System.out.printf("Compression ratio: %.3f\n", lzw.getCompressionRatio());
+
+                        lzw.outputResultToFile();
 
                         break;
                     default:

@@ -1,6 +1,7 @@
 package homework2;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -14,16 +15,15 @@ class LZW {
     private ArrayList<Integer> result;
     private HashMap<Integer, String> inverseLookupTable;
     private String data;
+    private String pathToFile;
 
     LZW(String pathToFile) throws IOException {
+        this.pathToFile = pathToFile;
+
         inverseLookupTable = new HashMap<>();
         result = new ArrayList<>();
 
         readFile(pathToFile);
-    }
-
-    void compressionRatio() {
-        System.out.printf("Compression ratio: %.3f\n", (double) data.length() / result.size());
     }
 
     void decode() {
@@ -73,6 +73,49 @@ class LZW {
         }
 
         System.out.println();
+    }
+
+    double getCompressionRatio() {
+        return (double) data.length() / result.size();
+    }
+
+    void outputResultToFile() throws IOException {
+        String[] splitPath = pathToFile.split("\\.");
+        String outputPath = splitPath[0] + "-output." + splitPath[1];
+
+        BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputPath));
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(pathToFile);
+        stringBuilder.append(" results:\n\nOriginal text:\n");
+        stringBuilder.append(data);
+        stringBuilder.append("\n\nIndex\tEntry\n");
+
+        for (Integer key : inverseLookupTable.keySet()) {
+            stringBuilder.append(key);
+            stringBuilder.append("\t\t");
+            stringBuilder.append(inverseLookupTable.get(key));
+            stringBuilder.append("\n");
+        }
+
+        stringBuilder.append("\nEncoded text: ");
+
+        for (Integer entry : result) {
+            stringBuilder.append(entry);
+            stringBuilder.append(" ");
+        }
+
+        stringBuilder.append("\n\nDecoded text: ");
+
+        for (Integer entry : result) {
+            stringBuilder.append(inverseLookupTable.get(entry));
+        }
+
+        stringBuilder.append("\n\nCompression ratio: ");
+        stringBuilder.append(getCompressionRatio());
+
+        writer.write(stringBuilder.toString());
+        writer.flush();
     }
 
     private void readFile(String pathToFile) throws IOException {
