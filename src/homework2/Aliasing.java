@@ -71,12 +71,89 @@ class Aliasing {
         }
     }
 
-    void filter1() {
+    private void pixel(int[] rgb, int x, int y, int[] p, double f, int w, int h) {
+        if ((w <= x && x < w) && (h <= y && y < h)) {
+            subSample.getPixel(x, y, rgb);
+            p[1] = (int) (rgb[1] * f);
+            p[2] = (int) (rgb[2] * f);
+            p[3] = (int) (rgb[3] * f);
+        }
+    }
 
+    void filter1() {
+        int[] rgb = {0, 0, 0};
+
+        int[] c = {0, 0, 0};
+        int[] p1 = {0, 0, 0};
+        int[] p2 = {0, 0, 0};
+        int[] p3 = {0, 0, 0};
+        int[] p4 = {0, 0, 0};
+        int[] p5 = {0, 0, 0};
+        int[] p6 = {0, 0, 0};
+        int[] p7 = {0, 0, 0};
+        int[] p8 = {0, 0, 0};
+
+        double f = 1.0 / 9.0;
+
+        int width = subSample.getWidth();
+        int height = subSample.getHeight();
+
+        for (int y = 0; y < subSample.getHeight(); y++) {
+            for (int x = 0; x < subSample.getWidth(); x++) {
+                pixel(rgb, x - 1, y - 1, p1, f, width, height);
+                pixel(rgb, x, y - 1, p2, f, width, height);
+                pixel(rgb, x + 1, y - 1, p3, f, width, height);
+                pixel(rgb, x - 1, y, p4, f, width, height);
+                pixel(rgb, x, y, c, f, width, height);
+                pixel(rgb, x + 1, y, p5, f, width, height);
+                pixel(rgb, x - 1, y + 1, p6, f, width, height);
+                pixel(rgb, x, y + 1, p7, f, width, height);
+                pixel(rgb, x + 1, y + 1, p8, f, width, height);
+
+                rgb[0] = c[0] + p1[0] + p2[0] + p3[0] + p4[0] + p5[0] + p6[0] + p7[0] + p8[0];
+                rgb[1] = c[1] + p1[1] + p2[1] + p3[1] + p4[1] + p5[1] + p6[1] + p7[1] + p8[1];
+                rgb[2] = c[2] + p1[2] + p2[2] + p3[2] + p4[2] + p5[2] + p6[2] + p7[2] + p8[2];
+
+                subSample.setPixel(x, y, rgb);
+            }
+        }
     }
 
     void filter2() {
+        int[] rgb = {0, 0, 0};
 
+        int[] c = {0, 0, 0};
+        int[] p1 = {0, 0, 0};
+        int[] p2 = {0, 0, 0};
+        int[] p3 = {0, 0, 0};
+        int[] p4 = {0, 0, 0};
+        int[] p5 = {0, 0, 0};
+        int[] p6 = {0, 0, 0};
+        int[] p7 = {0, 0, 0};
+        int[] p8 = {0, 0, 0};
+
+        int width = subSample.getWidth();
+        int height = subSample.getHeight();
+
+        for (int y = 0; y < subSample.getHeight(); y++) {
+            for (int x = 0; x < subSample.getWidth(); x++) {
+                pixel(rgb, x - 1, y - 1, p1, 1.0 / 16.0, width, height);
+                pixel(rgb, x, y - 1, p2, 2.0 / 16.0, width, height);
+                pixel(rgb, x + 1, y - 1, p3, 1.0 / 16.0, width, height);
+                pixel(rgb, x - 1, y, p4, 2.0 / 16.0, width, height);
+                pixel(rgb, x, y, c, 4.0 / 16.0, width, height);
+                pixel(rgb, x + 1, y, p5, 2.0 / 16.0, width, height);
+                pixel(rgb, x - 1, y + 1, p6, 1.0 / 16.0, width, height);
+                pixel(rgb, x, y + 1, p7, 2.0 / 16.0, width, height);
+                pixel(rgb, x + 1, y + 1, p8, 1.0 / 16.0, width, height);
+
+                rgb[0] = c[0] + p1[0] + p2[0] + p3[0] + p4[0] + p5[0] + p6[0] + p7[0] + p8[0];
+                rgb[1] = c[1] + p1[1] + p2[1] + p3[1] + p4[1] + p5[1] + p6[1] + p7[1] + p8[1];
+                rgb[2] = c[2] + p1[2] + p2[2] + p3[2] + p4[2] + p5[2] + p6[2] + p7[2] + p8[2];
+
+                subSample.setPixel(x, y, rgb);
+            }
+        }
     }
 
     private void horizontalLine(int x0, int x1, int y, int[] rgb) {
