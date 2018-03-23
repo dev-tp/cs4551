@@ -21,5 +21,8 @@ public class Main {
 
         System.out.println("\nDCT:");
         DiscreteCosineTransformation.printMatrix(dctMatrix);
+
+        System.out.println("\nInverse DCT:");
+        DiscreteCosineTransformation.printMatrix(DiscreteCosineTransformation.invert(dctMatrix));
     }
 }
