@@ -1,5 +1,7 @@
 package homework3;
 
+import utils.Image;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
@@ -8,7 +10,12 @@ public class Main {
             return;
         }
 
-        DctCompression dct = new DctCompression(args[0]);
-        dct.resize();
+        DctCompression dct = new DctCompression();
+
+        Image compressedImage = dct.compress(args[0]);
+        compressedImage.display();
+
+        Image restoredImage = dct.restore();
+        restoredImage.display();
     }
 }
