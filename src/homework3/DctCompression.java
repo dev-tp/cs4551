@@ -47,9 +47,17 @@ class DctCompression {
     private int[] rgbToYCbCr(int[] rgb) {
         int[] ycbcr = new int[3];
 
-        ycbcr[0] = (int) Math.round((0.2990 * rgb[0] + 0.5870 * rgb[1] + 0.1140 * rgb[2]) - 128);
-        ycbcr[1] = (int) Math.round((-0.1687 * rgb[0] - 0.3313 * rgb[1] + 0.5000 * rgb[2]) - 0.5);
-        ycbcr[2] = (int) Math.round((0.5000 * rgb[0] - 0.4187 * rgb[1] - 0.0813 * rgb[2]) - 0.5);
+        ycbcr[0] = (int) (0.2990 * rgb[0] + 0.5870 * rgb[1] + 0.1140 * rgb[2]);
+        ycbcr[1] = (int) (-0.1687 * rgb[0] - 0.3313 * rgb[1] + 0.5000 * rgb[2] + 128.0);
+        ycbcr[2] = (int) (0.5000 * rgb[0] - 0.4187 * rgb[1] - 0.0813 * rgb[2] + 128.0);
+
+        for (int i = 0; i < ycbcr.length; i++) {
+            if (ycbcr[i] < 0) {
+                ycbcr[i] = 0;
+            } else if (ycbcr[i] > 255) {
+                ycbcr[i] = 255;
+            }
+        }
 
         return ycbcr;
     }
@@ -72,9 +80,20 @@ class DctCompression {
     private int[] yCbCrToRgb(int[] ycbcr) {
         int[] rgb = new int[3];
 
-        rgb[0] = (int) Math.round((ycbcr[0] + 1.4020 * ycbcr[2]) + 128);
-        rgb[1] = (int) Math.round((ycbcr[0] - 0.3441 * ycbcr[1] - 0.7141 * ycbcr[2]) + 0.5);
-        rgb[2] = (int) Math.round((ycbcr[0] + 1.7720 * ycbcr[1]) + 0.5);
+        ycbcr[1] -= 128;
+        ycbcr[2] -= 128;
+
+        rgb[0] = (int) (1.000 * ycbcr[0] + 0.0000 * ycbcr[1] + 1.4000 * ycbcr[2]);
+        rgb[1] = (int) (1.000 * ycbcr[0] - 0.3430 * ycbcr[1] - 0.7110 * ycbcr[2]);
+        rgb[2] = (int) (1.000 * ycbcr[0] + 1.7650 * ycbcr[1] + 0.0000 * ycbcr[2]);
+
+        for (int i = 0; i < rgb.length; i++) {
+            if (rgb[i] < 0) {
+                rgb[i] = 0;
+            } else if (rgb[i] > 255) {
+                rgb[i] = 255;
+            }
+        }
 
         return rgb;
     }
