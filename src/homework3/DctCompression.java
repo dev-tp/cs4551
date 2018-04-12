@@ -41,6 +41,41 @@ class DctCompression {
             }
         }
 
+        int[][] cbChannel = new int[width / 2][height / 2];
+        int[][] crChannel = new int[width / 2][height / 2];
+
+        int[] ycbcr = new int[3];
+
+        int cbAverage = 0;
+        int crAverage = 0;
+
+        // Chroma Sub-sampling (4:2:0)
+        for (int y = 0; y < height; y += 2) {
+            for (int x = 0; x < width; x += 2) {
+                resizedImage.getPixel(x, y, ycbcr);
+                cbAverage += ycbcr[1];
+                crAverage += ycbcr[2];
+
+                resizedImage.getPixel(x, y + 1, ycbcr);
+                cbAverage += ycbcr[1];
+                crAverage += ycbcr[2];
+
+                resizedImage.getPixel(x + 1, y, ycbcr);
+                cbAverage += ycbcr[1];
+                crAverage += ycbcr[2];
+
+                resizedImage.getPixel(x + 1, y + 1, ycbcr);
+                cbAverage += ycbcr[1];
+                crAverage += ycbcr[2];
+
+                cbChannel[x / 2][y / 2] = cbAverage / 4;
+                crChannel[x / 2][y / 2] = crAverage / 4;
+
+                cbAverage = 0;
+                crAverage = 0;
+            }
+        }
+
         return resizedImage;
     }
 
