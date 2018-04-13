@@ -16,6 +16,9 @@ class DctCompression {
     private double[][] applyDctOnChannel(double[][] channel, int width, int height) {
         double[][] dctMatrix = new double[width][height];
 
+        double minValue = -1024.0;  // -2^10
+        double maxValue = 1024.0;  // 2^10
+
         // Divide channel into 8x8 sections
         for (int y = 0; y < height; y += 8) {
             for (int x = 0; x < width; x += 8) {
@@ -36,7 +39,15 @@ class DctCompression {
 
                         double c = ((u == 0 ? Math.sqrt(2.0) / 2 : 1) * (v == 0 ? Math.sqrt(2.0) / 2 : 1)) / 4.0;
 
-                        dctMatrix[x + u][y + v] = c * sum;
+                        sum *= c;
+
+                        if (sum < minValue) {
+                            sum = minValue;
+                        } else if (sum > maxValue) {
+                            sum = maxValue;
+                        }
+
+                        dctMatrix[x + u][y + v] = sum;
                     }
                 }
             }
