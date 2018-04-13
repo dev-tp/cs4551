@@ -4,6 +4,28 @@ import utils.Image;
 
 class DctCompression {
 
+    private static final double[][] LUMINANCE_QUANTIZATION_TABLE = {
+            {4, 4, 4, 8, 8, 16, 16, 32},
+            {4, 4, 4, 8, 8, 16, 16, 32},
+            {4, 4, 8, 8, 16, 16, 32, 32},
+            {8, 8, 8, 16, 16, 32, 32, 32},
+            {8, 8, 16, 16, 32, 32, 32, 32},
+            {16, 16, 16, 32, 32, 32, 32, 32},
+            {16, 16, 32, 32, 32, 32, 32, 32},
+            {32, 32, 32, 32, 32, 32, 32, 32},
+    };
+
+    private static final double[][] CHROMINANCE_QUANTIZATION_TABLE = {
+            {8, 8, 8, 16, 32, 32, 32, 32},
+            {8, 8, 8, 16, 32, 32, 32, 32},
+            {8, 8, 16, 32, 32, 32, 32, 32},
+            {16, 16, 32, 32, 32, 32, 32, 32},
+            {32, 32, 32, 32, 32, 32, 32, 32},
+            {32, 32, 32, 32, 32, 32, 32, 32},
+            {32, 32, 32, 32, 32, 32, 32, 32},
+            {32, 32, 32, 32, 32, 32, 32, 32},
+    };
+
     private Image resizedImage;
     private int originalHeight;
     private int originalWidth;
@@ -123,7 +145,30 @@ class DctCompression {
         double[][] cbChannelDct = applyDctOnChannel(cbChannel, cbCrWidth, cbCrHeight);
         double[][] crChannelDct = applyDctOnChannel(crChannel, cbCrWidth, cbCrHeight);
 
+        quantizeDctChannel(yChannelDct, LUMINANCE_QUANTIZATION_TABLE, 0);
+        quantizeDctChannel(cbChannelDct, CHROMINANCE_QUANTIZATION_TABLE, 0);
+        quantizeDctChannel(crChannelDct, CHROMINANCE_QUANTIZATION_TABLE, 0);
+
         return resizedImage;
+    }
+
+    private void quantizeDctChannel(double[][] channel, double[][] qTable, int n) {
+        if (n < 0) {
+            n = 0;
+        } else if (n > 5) {
+            n = 5;
+        }
+
+        for (int x = 0; x < channel.length; x += 8) {
+            for (int y = 0; y < channel[0].length; y += 8) {
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        double q = qTable[i][j] * Math.pow(2.0, n);
+                        channel[x + i][y + j] = channel[x + i][y + j] / q;
+                    }
+                }
+            }
+        }
     }
 
     private int[] rgbToYCbCr(int[] rgb) {
