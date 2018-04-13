@@ -8,6 +8,38 @@ class DctCompression {
     private int originalHeight;
     private int originalWidth;
 
+    private double[][] applyDctOnChannel(double[][] channel, int width, int height) {
+        double[][] dctMatrix = new double[width][height];
+
+        // Divide channel into 8x8 sections
+        for (int y = 0; y < height; y += 8) {
+            for (int x = 0; x < width; x += 8) {
+
+                // Apply DCT on channel
+                for (int u = 0; u < 8; u++) {
+                    for (int v = 0; v < 8; v++) {
+                        double sum = 0.0;
+
+                        for (int i = x; i < x + 8; i++) {
+                            for (int j = y; j < y + 8; j++) {
+                                double a = Math.cos((2 * i + 1) * u * Math.PI / 16);
+                                double b = Math.cos((2 * j + 1) * v * Math.PI / 16);
+
+                                sum += a * b * (channel[i][j] - 128);
+                            }
+                        }
+
+                        double c = ((u == 0 ? Math.sqrt(2.0) / 2 : 1) * (v == 0 ? Math.sqrt(2.0) / 2 : 1)) / 4.0;
+
+                        dctMatrix[x + u][y + v] = c * sum;
+                    }
+                }
+            }
+        }
+
+        return dctMatrix;
+    }
+
     Image compress(String imagePath) throws Exception {
         Image image = new Image(imagePath);
 
@@ -33,21 +65,26 @@ class DctCompression {
         resizedImage = new Image(width, height);
 
         int[] rgb = new int[3];
+        int[] ycbcr = new int[3];
+
+        double[][] yChannel = new double[width][height];
 
         for (int y = 0; y < originalHeight; y++) {
             for (int x = 0; x < originalWidth; x++) {
                 image.getPixel(x, y, rgb);
-                resizedImage.setPixel(x, y, rgbToYCbCr(rgb));
+
+                ycbcr = rgbToYCbCr(rgb);
+                yChannel[x][y] = ycbcr[0];
+
+                resizedImage.setPixel(x, y, ycbcr);
             }
         }
 
-        int[][] cbChannel = new int[width / 2][height / 2];
-        int[][] crChannel = new int[width / 2][height / 2];
+        double[][] cbChannel = new double[width / 2][height / 2];
+        double[][] crChannel = new double[width / 2][height / 2];
 
-        int[] ycbcr = new int[3];
-
-        int cbAverage = 0;
-        int crAverage = 0;
+        double cbAverage = 0.0;
+        double crAverage = 0.0;
 
         // Chroma Sub-sampling (4:2:0)
         for (int y = 0; y < height; y += 2) {
@@ -68,13 +105,17 @@ class DctCompression {
                 cbAverage += ycbcr[1];
                 crAverage += ycbcr[2];
 
-                cbChannel[x / 2][y / 2] = cbAverage / 4;
-                crChannel[x / 2][y / 2] = crAverage / 4;
+                cbChannel[x / 2][y / 2] = cbAverage / 4.0;
+                crChannel[x / 2][y / 2] = crAverage / 4.0;
 
-                cbAverage = 0;
-                crAverage = 0;
+                cbAverage = 0.0;
+                crAverage = 0.0;
             }
         }
+
+        double[][] yChannelDct = applyDctOnChannel(yChannel, width, height);
+        // double[][] cbChannelDct = applyDctOnChannel(cbChannel, width / 2, height / 2);
+        // double[][] crChannelDct = applyDctOnChannel(crChannel, width / 2, height / 2);
 
         return resizedImage;
     }
