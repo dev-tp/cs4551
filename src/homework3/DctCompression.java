@@ -27,6 +27,9 @@ class DctCompression {
     };
 
     private Image resizedImage;
+    private double[][] cbChannelDct;
+    private double[][] crChannelDct;
+    private double[][] yChannelDct;
     private int originalHeight;
     private int originalWidth;
 
@@ -141,18 +144,18 @@ class DctCompression {
             }
         }
 
-        double[][] yChannelDct = applyDctOnChannel(yChannel, width, height);
-        double[][] cbChannelDct = applyDctOnChannel(cbChannel, cbCrWidth, cbCrHeight);
-        double[][] crChannelDct = applyDctOnChannel(crChannel, cbCrWidth, cbCrHeight);
+        yChannelDct = applyDctOnChannel(yChannel, width, height);
+        cbChannelDct = applyDctOnChannel(cbChannel, cbCrWidth, cbCrHeight);
+        crChannelDct = applyDctOnChannel(crChannel, cbCrWidth, cbCrHeight);
 
-        quantizeDctChannel(yChannelDct, LUMINANCE_QUANTIZATION_TABLE, 0);
-        quantizeDctChannel(cbChannelDct, CHROMINANCE_QUANTIZATION_TABLE, 0);
-        quantizeDctChannel(crChannelDct, CHROMINANCE_QUANTIZATION_TABLE, 0);
+        quantizeDctChannel(yChannelDct, LUMINANCE_QUANTIZATION_TABLE, 0, false);
+        quantizeDctChannel(cbChannelDct, CHROMINANCE_QUANTIZATION_TABLE, 0, false);
+        quantizeDctChannel(crChannelDct, CHROMINANCE_QUANTIZATION_TABLE, 0, false);
 
         return resizedImage;
     }
 
-    private void quantizeDctChannel(double[][] channel, double[][] qTable, int n) {
+    private void quantizeDctChannel(double[][] channel, double[][] qTable, int n, boolean deQuantize) {
         if (n < 0) {
             n = 0;
         } else if (n > 5) {
@@ -164,7 +167,8 @@ class DctCompression {
                 for (int i = 0; i < 8; i++) {
                     for (int j = 0; j < 8; j++) {
                         double q = qTable[i][j] * Math.pow(2.0, n);
-                        channel[x + i][y + j] = channel[x + i][y + j] / q;
+                        channel[x + i][y + j] = deQuantize ? channel[x + i][y + j] * q :
+                                Math.round(channel[x + i][y + j] / q);
                     }
                 }
             }
@@ -190,6 +194,10 @@ class DctCompression {
     }
 
     Image restore() {
+        quantizeDctChannel(yChannelDct, LUMINANCE_QUANTIZATION_TABLE, 0, true);
+        quantizeDctChannel(cbChannelDct, CHROMINANCE_QUANTIZATION_TABLE, 0, true);
+        quantizeDctChannel(crChannelDct, CHROMINANCE_QUANTIZATION_TABLE, 0, true);
+
         Image image = new Image(originalWidth, originalHeight);
 
         int[] ycbcr = new int[3];
