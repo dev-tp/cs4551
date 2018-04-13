@@ -8,6 +8,11 @@ class DctCompression {
     private int originalHeight;
     private int originalWidth;
 
+    private int addPadding(int length) {
+        int newLength = length % 8;
+        return newLength != 0 ? (8 - newLength) + length : length;
+    }
+
     private double[][] applyDctOnChannel(double[][] channel, int width, int height) {
         double[][] dctMatrix = new double[width][height];
 
@@ -46,21 +51,8 @@ class DctCompression {
         originalHeight = image.getHeight();
         originalWidth = image.getWidth();
 
-        int width = originalWidth % 8;
-
-        if (width != 0) {
-            width = (8 - width) + originalWidth;
-        } else {
-            width = originalWidth;
-        }
-
-        int height = originalHeight % 8;
-
-        if (height != 0) {
-            height = (8 - height) + originalHeight;
-        } else {
-            height = originalHeight;
-        }
+        int width = addPadding(originalWidth);
+        int height = addPadding(originalHeight);
 
         resizedImage = new Image(width, height);
 
@@ -80,8 +72,11 @@ class DctCompression {
             }
         }
 
-        double[][] cbChannel = new double[width / 2][height / 2];
-        double[][] crChannel = new double[width / 2][height / 2];
+        int cbCrWidth = addPadding(width / 2);
+        int cbCrHeight = addPadding(height / 2);
+
+        double[][] cbChannel = new double[cbCrWidth][cbCrHeight];
+        double[][] crChannel = new double[cbCrWidth][cbCrHeight];
 
         double cbAverage = 0.0;
         double crAverage = 0.0;
@@ -114,8 +109,8 @@ class DctCompression {
         }
 
         double[][] yChannelDct = applyDctOnChannel(yChannel, width, height);
-        // double[][] cbChannelDct = applyDctOnChannel(cbChannel, width / 2, height / 2);
-        // double[][] crChannelDct = applyDctOnChannel(crChannel, width / 2, height / 2);
+        double[][] cbChannelDct = applyDctOnChannel(cbChannel, cbCrWidth, cbCrHeight);
+        double[][] crChannelDct = applyDctOnChannel(crChannel, cbCrWidth, cbCrHeight);
 
         return resizedImage;
     }
