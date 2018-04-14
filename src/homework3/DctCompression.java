@@ -155,6 +155,35 @@ class DctCompression {
         return resizedImage;
     }
 
+    private double[][] invertDctOnChannel(double[][] channel, int width, int height) {
+        double[][] matrix = new double[width][height];
+
+        for (int y = 0; y < height; y += 8) {
+            for (int x = 0; x < width; x += 8) {
+                // Invert DCT
+                for (int u = 0; u < 8; u++) {
+                    for (int v = 0; v < 8; v++) {
+                        double sum = 0.0;
+
+                        for (int i = x; i < x + 8; i++) {
+                            for (int j = y; j < y + 8; j++) {
+                                double a = ((i == 0 ? Math.sqrt(2.0) / 2 : 1) * (j == 0 ? Math.sqrt(2.0) / 2 : 1)) / 4.0;
+                                double b = Math.cos((2 * u + 1) * (i % 8) * Math.PI / 16);
+                                double c = Math.cos((2 * v + 1) * (j % 8) * Math.PI / 16);
+
+                                sum += a * b * c * channel[i][j];
+                            }
+
+                            matrix[x + u][y + v] = sum + 128;
+                        }
+                    }
+                }
+            }
+        }
+
+        return matrix;
+    }
+
     private void quantizeDctChannel(double[][] channel, double[][] qTable, int n, boolean deQuantize) {
         if (n < 0) {
             n = 0;
@@ -197,6 +226,8 @@ class DctCompression {
         quantizeDctChannel(yChannelDct, LUMINANCE_QUANTIZATION_TABLE, 0, true);
         quantizeDctChannel(cbChannelDct, CHROMINANCE_QUANTIZATION_TABLE, 0, true);
         quantizeDctChannel(crChannelDct, CHROMINANCE_QUANTIZATION_TABLE, 0, true);
+
+        double[][] yChannel = invertDctOnChannel(yChannelDct, yChannelDct.length, yChannelDct[0].length);
 
         Image image = new Image(originalWidth, originalHeight);
 
