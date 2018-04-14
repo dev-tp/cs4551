@@ -55,8 +55,8 @@ class DctCompression {
 
                         for (int i = x; i < x + 8; i++) {
                             for (int j = y; j < y + 8; j++) {
-                                double a = Math.cos((2 * i + 1) * u * Math.PI / 16);
-                                double b = Math.cos((2 * j + 1) * v * Math.PI / 16);
+                                double a = Math.cos((2 * (i % 8) + 1) * u * Math.PI / 16);
+                                double b = Math.cos((2 * (j % 8) + 1) * v * Math.PI / 16);
 
                                 sum += a * b * (channel[i][j] - 128);
                             }
