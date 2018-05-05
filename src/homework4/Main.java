@@ -2,6 +2,8 @@ package homework4;
 
 import java.util.Scanner;
 
+import utils.Image;
+
 public class Main {
 
     private static void printOptions() {
@@ -24,6 +26,22 @@ public class Main {
                 printOptions();
                 switch (scanner.nextInt()) {
                     case 1:
+                        scanner.nextLine(); // Clear buffer
+
+                        System.out.print("Target image path: ");
+                        String targetPath = scanner.nextLine();
+
+                        System.out.print("Reference image path: ");
+                        String referencePath = scanner.nextLine();
+
+                        System.out.print("Enter block size [8, 16, 24]: ");
+                        int n = scanner.nextInt();
+
+                        System.out.print("Enter search window value [4, 8, 12, 16]: ");
+                        int p = scanner.nextInt();
+
+                        BlockBasedMotionCompensation.routine(new Image(targetPath), new Image(referencePath), n, p);
+
                         break;
                     case 2:
                         break;
