@@ -1,5 +1,9 @@
 package homework4;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import utils.Image;
 
 class BlockBasedMotionCompensation {
@@ -45,7 +49,7 @@ class BlockBasedMotionCompensation {
         return sum / (blockSize * blockSize);
     }
 
-    private static Number[] motionVectorAndMinCost(double[][] costs) {
+    private static Number[] motionVector(double[][] costs) {
         Number[] tuple = {0, 0, costs[0][0]}; // dx, dy, minCost
 
         for (int x = 0; x < costs.length; x++) {
@@ -70,10 +74,12 @@ class BlockBasedMotionCompensation {
     }
 
     static void routine(Image targetImage, Image referenceImage, int blockSize, int searchWindow) {
+        int block = 0;
         int height = targetImage.getHeight();
         int width = targetImage.getWidth();
 
         double[][] costs = new double[2 * searchWindow + 1][2 * searchWindow + 1];
+        Number[][] motionVectors = new Number[(width / blockSize) * (height / blockSize)][3];
 
         // Divide target image into nxn blocks
         for (int y = 0; y < height; y += blockSize) {
@@ -96,13 +102,54 @@ class BlockBasedMotionCompensation {
                     }
                 }
 
-                Number[] min = motionVectorAndMinCost(costs);
-
-                System.out.println((min[0].intValue() - searchWindow) + " " + (min[1].intValue() - searchWindow) + " "
-                        + min[2]);
-
+                motionVectors[block++] = motionVector(costs);
                 resetCostValues(costs);
             }
+        }
+
+        writeMotionVectorsToFile(motionVectors, targetImage, referenceImage, blockSize, searchWindow);
+    }
+
+    private static void writeMotionVectorsToFile(
+            Number[][] motionVectors, Image targetImage, Image referenceImage, int blockSize, int searchWindow) {
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(System.getProperty("user.dir") + "/mv.txt"));
+
+            writer.write("# Name:");
+            writer.newLine();
+
+            writer.write("# Target Image: " + targetImage.getFileName());
+            writer.newLine();
+
+            writer.write("# Reference Image: " + referenceImage.getFileName());
+            writer.newLine();
+
+            int width = targetImage.getWidth();
+            int height = targetImage.getHeight();
+
+            int columnSize = width / blockSize;
+            int rowSize = height / blockSize;
+
+            writer.write("# Number of macro blocks: " + columnSize + " x " + rowSize);
+            writer.write(" (Original image is " + width + " x " + height + ")");
+            writer.newLine();
+
+            for (int i = 0; i < motionVectors.length; i++) {
+                if (i % columnSize != 0) {
+                    int dx = motionVectors[i][0].intValue() - searchWindow;
+                    int dy = motionVectors[i][1].intValue() - searchWindow;
+
+                    writer.write("[" + dx + " " + dy + "] ");
+                } else {
+                    writer.newLine();
+                }
+            }
+
+            writer.flush();
+            writer.close();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 }

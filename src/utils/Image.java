@@ -83,6 +83,10 @@ public class Image {
         System.out.println(info);
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
     /**
      * @return The image height
      */
